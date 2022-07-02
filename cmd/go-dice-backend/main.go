@@ -5,6 +5,9 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/svetlana-rezvaya/go-dice-cli"
+	"github.com/svetlana-rezvaya/go-dice-cli/statistics"
 )
 
 func main() {
@@ -45,7 +48,10 @@ func main() {
 			return
 		}
 
-		fmt.Fprintf(writer, "throws: %d\nfaces: %d", throws, faces)
+		throwResults := dice.GenerateDiceThrows(throws, faces)
+		throwStatistics := statistics.CollectStatistics(throwResults)
+
+		fmt.Fprintf(writer, "throwResults: %v\nthrowStatistics: %+v", throwResults, throwStatistics)
 	})
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
