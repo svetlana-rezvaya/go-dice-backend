@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 
+	httputils "github.com/svetlana-rezvaya/go-dice-backend/http-utils"
 	"github.com/svetlana-rezvaya/go-dice-cli"
 	"github.com/svetlana-rezvaya/go-dice-cli/statistics"
 )
@@ -18,36 +18,18 @@ type result struct {
 
 func main() {
 	http.HandleFunc("/api/v1/dice", func(writer http.ResponseWriter, request *http.Request) {
-		throwsAsString := request.FormValue("throws")
-		if throwsAsString == "" {
-			const errMessage = "throw count is missing"
-			log.Print(errMessage)
-			http.Error(writer, errMessage, http.StatusBadRequest)
-
-			return
-		}
-
-		throws, err := strconv.Atoi(throwsAsString)
+		throws, err := httputils.GetIntFormValue(request, "throws")
 		if err != nil {
-			errMessage := fmt.Sprintf("incorrect throw count: %s", err)
+			errMessage := fmt.Sprintf("unable to get throw count: %s", err)
 			log.Print(errMessage)
 			http.Error(writer, errMessage, http.StatusBadRequest)
 
 			return
 		}
 
-		facesAsString := request.FormValue("faces")
-		if facesAsString == "" {
-			const errMessage = "face count is missing"
-			log.Print(errMessage)
-			http.Error(writer, errMessage, http.StatusBadRequest)
-
-			return
-		}
-
-		faces, err := strconv.Atoi(facesAsString)
+		faces, err := httputils.GetIntFormValue(request, "faces")
 		if err != nil {
-			errMessage := fmt.Sprintf("incorrect face count: %s", err)
+			errMessage := fmt.Sprintf("unable to get face count: %s", err)
 			log.Print(errMessage)
 			http.Error(writer, errMessage, http.StatusBadRequest)
 
