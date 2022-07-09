@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -20,19 +19,13 @@ func main() {
 	http.HandleFunc("/api/v1/dice", func(writer http.ResponseWriter, request *http.Request) {
 		throws, err := httputils.GetIntFormValue(request, "throws")
 		if err != nil {
-			errMessage := fmt.Sprintf("unable to get throw count: %s", err)
-			log.Print(errMessage)
-			http.Error(writer, errMessage, http.StatusBadRequest)
-
+			httputils.HandleError(writer, http.StatusBadRequest, "unable to get throw count: %s", err)
 			return
 		}
 
 		faces, err := httputils.GetIntFormValue(request, "faces")
 		if err != nil {
-			errMessage := fmt.Sprintf("unable to get face count: %s", err)
-			log.Print(errMessage)
-			http.Error(writer, errMessage, http.StatusBadRequest)
-
+			httputils.HandleError(writer, http.StatusBadRequest, "unable to get face count: %s", err)
 			return
 		}
 
@@ -42,10 +35,7 @@ func main() {
 		throwTotalResult := result{Throws: throwResults, Statistics: throwStatistics}
 		responseBytes, err := json.Marshal(throwTotalResult)
 		if err != nil {
-			errMessage := fmt.Sprintf("unable to marshal the response: %s", err)
-			log.Print(errMessage)
-			http.Error(writer, errMessage, http.StatusInternalServerError)
-
+			httputils.HandleError(writer, http.StatusInternalServerError, "unable to marshal the response: %s", err)
 			return
 		}
 

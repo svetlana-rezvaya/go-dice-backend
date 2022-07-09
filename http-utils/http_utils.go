@@ -3,6 +3,7 @@ package httputils
 import (
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -20,4 +21,11 @@ func GetIntFormValue(request *http.Request, key string) (int, error) {
 	}
 
 	return value, nil
+}
+
+// HandleError ...
+func HandleError(writer http.ResponseWriter, status int, format string, arguments ...any) {
+	errMessage := fmt.Sprintf(format, arguments...)
+	log.Print(errMessage)
+	http.Error(writer, errMessage, status)
 }
