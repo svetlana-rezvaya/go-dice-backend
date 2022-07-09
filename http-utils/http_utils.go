@@ -24,7 +24,12 @@ func GetIntFormValue(request *http.Request, key string) (int, error) {
 }
 
 // HandleError ...
-func HandleError(writer http.ResponseWriter, status int, format string, arguments ...any) {
+func HandleError(
+	writer http.ResponseWriter,
+	status int,
+	format string,
+	arguments ...any,
+) {
 	errMessage := fmt.Sprintf(format, arguments...)
 	log.Print(errMessage)
 	http.Error(writer, errMessage, status)

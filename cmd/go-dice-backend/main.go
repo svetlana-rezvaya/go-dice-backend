@@ -16,16 +16,23 @@ type result struct {
 }
 
 func main() {
-	http.HandleFunc("/api/v1/dice", func(writer http.ResponseWriter, request *http.Request) {
+	http.HandleFunc("/api/v1/dice", func(
+		writer http.ResponseWriter,
+		request *http.Request,
+	) {
 		throws, err := httputils.GetIntFormValue(request, "throws")
 		if err != nil {
-			httputils.HandleError(writer, http.StatusBadRequest, "unable to get throw count: %s", err)
+			status, format := http.StatusBadRequest, "unable to get throw count: %s"
+			httputils.HandleError(writer, status, format, err)
+
 			return
 		}
 
 		faces, err := httputils.GetIntFormValue(request, "faces")
 		if err != nil {
-			httputils.HandleError(writer, http.StatusBadRequest, "unable to get face count: %s", err)
+			status, format := http.StatusBadRequest, "unable to get face count: %s"
+			httputils.HandleError(writer, status, format, err)
+
 			return
 		}
 
@@ -35,12 +42,15 @@ func main() {
 		throwTotalResult := result{Throws: throwResults, Statistics: throwStatistics}
 		responseBytes, err := json.Marshal(throwTotalResult)
 		if err != nil {
-			httputils.HandleError(writer, http.StatusInternalServerError, "unable to marshal the response: %s", err)
+			status, format :=
+				http.StatusInternalServerError, "unable to marshal the response: %s"
+			httputils.HandleError(writer, status, format, err)
+
 			return
 		}
 
 		writer.Header().Set("Content-Type", "application/json")
-		writer.Write(responseBytes)
+		writer.Write(responseBytes) // nolint: errcheck
 	})
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
