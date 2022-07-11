@@ -3,8 +3,10 @@ package main
 import (
 	"encoding/json"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
+	"time"
 
 	httputils "github.com/svetlana-rezvaya/go-dice-backend/http-utils"
 	"github.com/svetlana-rezvaya/go-dice-cli"
@@ -17,6 +19,8 @@ type result struct {
 }
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
+
 	port, ok := os.LookupEnv("PORT")
 	if !ok {
 		port = "8080"
