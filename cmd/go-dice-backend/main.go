@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 
 	httputils "github.com/svetlana-rezvaya/go-dice-backend/http-utils"
 	"github.com/svetlana-rezvaya/go-dice-cli"
@@ -16,6 +17,11 @@ type result struct {
 }
 
 func main() {
+	port, ok := os.LookupEnv("PORT")
+	if !ok {
+		port = "8080"
+	}
+
 	http.HandleFunc("/api/v1/dice", func(
 		writer http.ResponseWriter,
 		request *http.Request,
@@ -53,7 +59,7 @@ func main() {
 		writer.Write(responseBytes) // nolint: errcheck
 	})
 
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal(err)
 	}
 }

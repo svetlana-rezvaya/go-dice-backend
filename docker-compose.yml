@@ -1,9 +1,11 @@
 version: "3"
 services:
   go-dice-backend:
-    build: 
+    build:
       context: .
       dockerfile: DockerFile
+    environment:
+      PORT: 9090
     ports:
-      - 8080:8080 # first - host port, second - container port (port mapping)
+      - 8080:9090 # first - host port, second - container port (port mapping)
     restart: always
