@@ -95,7 +95,7 @@ func TestHandleError(test *testing.T) {
 		wantedResponse   *http.Response
 	}{
 		{
-			name: "succes",
+			name: "success",
 			args: args{
 				status:    http.StatusNotFound,
 				format:    "test: %d %s",
