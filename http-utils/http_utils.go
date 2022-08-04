@@ -8,6 +8,16 @@ import (
 	"strconv"
 )
 
+func LoggingMiddleware(handler http.HandlerFunc) http.HandlerFunc {
+	return func(
+		writer http.ResponseWriter,
+		request *http.Request,
+	) {
+		handler(writer, request)
+		log.Printf("%s %s", request.Method, request.URL)
+	}
+}
+
 // GetIntFormValue ...
 func GetIntFormValue(request *http.Request, key string) (int, error) {
 	valueAsString := request.FormValue(key)

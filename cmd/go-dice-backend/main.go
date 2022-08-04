@@ -26,7 +26,7 @@ func main() {
 		port = "8080"
 	}
 
-	http.HandleFunc("/api/v1/dice", func(
+	http.HandleFunc("/api/v1/dice", httputils.LoggingMiddleware(func(
 		writer http.ResponseWriter,
 		request *http.Request,
 	) {
@@ -61,7 +61,7 @@ func main() {
 
 		writer.Header().Set("Content-Type", "application/json")
 		writer.Write(responseBytes) // nolint: errcheck
-	})
+	}))
 
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal(err)
