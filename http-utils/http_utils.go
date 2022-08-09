@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func LoggingMiddleware(handler http.HandlerFunc) http.HandlerFunc {
@@ -13,8 +14,11 @@ func LoggingMiddleware(handler http.HandlerFunc) http.HandlerFunc {
 		writer http.ResponseWriter,
 		request *http.Request,
 	) {
+		startTime := time.Now()
 		handler(writer, request)
-		log.Printf("%s %s", request.Method, request.URL)
+
+		elapsedTime := time.Now().Sub(startTime)
+		log.Printf("%s %s %s", request.Method, request.URL, elapsedTime)
 	}
 }
 
