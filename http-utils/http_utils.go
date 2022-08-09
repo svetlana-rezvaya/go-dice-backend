@@ -6,7 +6,21 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 )
+
+func LoggingMiddleware(handler http.HandlerFunc) http.HandlerFunc {
+	return func(
+		writer http.ResponseWriter,
+		request *http.Request,
+	) {
+		startTime := time.Now()
+		handler(writer, request)
+
+		elapsedTime := time.Now().Sub(startTime)
+		log.Printf("%s %s %s", request.Method, request.URL, elapsedTime)
+	}
+}
 
 // GetIntFormValue ...
 func GetIntFormValue(request *http.Request, key string) (int, error) {
