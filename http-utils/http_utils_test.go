@@ -12,6 +12,60 @@ import (
 	"testing"
 )
 
+func TestLoggingMiddleware(test *testing.T) {
+	previousLogOutput := log.Writer()
+	defer func() { log.SetOutput(previousLogOutput) }()
+
+	var logBuffer bytes.Buffer
+	log.SetOutput(&logBuffer)
+
+	responseRecorder := httptest.NewRecorder()
+	handler := LoggingMiddleware(func(
+		writer http.ResponseWriter,
+		request *http.Request,
+	) {
+		writer.Write([]byte("Hello, world!"))
+	})
+	handler(
+		responseRecorder,
+		httptest.NewRequest(http.MethodGet, "http://example.com/test", nil),
+	)
+
+	logMessage := logBuffer.String()
+	wantedLogMessage := "GET http://example.com/test"
+	if !strings.Contains(logMessage, wantedLogMessage) {
+		test.Logf(
+			"failed:\n  expected: %+v\n  actual: %+v",
+			wantedLogMessage,
+			logMessage,
+		)
+		test.Fail()
+	}
+
+	response := responseRecorder.Result()
+	wantedResponse := &http.Response{
+		Status: strconv.Itoa(http.StatusOK) + " " +
+			http.StatusText(http.StatusOK),
+		StatusCode: http.StatusOK,
+		Proto:      "HTTP/1.1",
+		ProtoMajor: 1,
+		ProtoMinor: 1,
+		Header: http.Header{
+			"Content-Type": []string{"text/plain; charset=utf-8"},
+		},
+		Body:          ioutil.NopCloser(bytes.NewReader([]byte("Hello, world!"))),
+		ContentLength: -1,
+	}
+	if !reflect.DeepEqual(response, wantedResponse) {
+		test.Logf(
+			"failed:\n  expected: %+v\n  actual: %+v",
+			wantedResponse,
+			response,
+		)
+		test.Fail()
+	}
+}
+
 func TestGetIntFormValue(test *testing.T) {
 	type args struct {
 		request *http.Request
