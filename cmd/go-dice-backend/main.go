@@ -13,6 +13,8 @@ import (
 	"github.com/svetlana-rezvaya/go-dice-cli/statistics"
 )
 
+//go:generate swag init --generalInfo main.go --output ../../docs --outputTypes json,yaml
+
 type result struct {
 	Throws     []int
 	Statistics statistics.Statistics
