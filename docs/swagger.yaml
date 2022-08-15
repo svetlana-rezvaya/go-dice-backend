@@ -1,4 +1,23 @@
 basePath: /api/v1
+definitions:
+  main.result:
+    properties:
+      statistics:
+        $ref: '#/definitions/statistics.Statistics'
+      throws:
+        items:
+          type: integer
+        type: array
+    type: object
+  statistics.Statistics:
+    properties:
+      maximum:
+        type: integer
+      minimum:
+        type: integer
+      sum:
+        type: integer
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -6,5 +25,33 @@ info:
     name: MIT
   title: go-dice-backend API
   version: 1.0.0
-paths: {}
+paths:
+  /dice:
+    post:
+      parameters:
+      - description: throw count
+        in: query
+        name: throws
+        required: true
+        type: integer
+      - description: face count
+        in: query
+        name: faces
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.result'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
 swagger: "2.0"
