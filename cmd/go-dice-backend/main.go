@@ -15,6 +15,12 @@ import (
 
 //go:generate swag init --generalInfo main.go --output ../../docs --outputTypes json,yaml
 
+// @title go-dice-backend API
+// @version 1.0.0
+// @license.name MIT
+// @host localhost:8080
+// @basePath /api/v1
+
 type result struct {
 	Throws     []int
 	Statistics statistics.Statistics

@@ -1,0 +1,10 @@
+basePath: /api/v1
+host: localhost:8080
+info:
+  contact: {}
+  license:
+    name: MIT
+  title: go-dice-backend API
+  version: 1.0.0
+paths: {}
+swagger: "2.0"
