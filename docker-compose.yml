@@ -19,3 +19,14 @@ services:
     volumes:
       - ./docs/swagger.json:/etc/go-dice-backend/swagger.json:ro
     restart: always
+
+  k6:
+    image: grafana/k6:0.39.0-69-g8f981bb3
+    ports:
+      - 6565:6565 # first - host port, second - container port (port mapping)
+    volumes:
+      - ./tests/load_tests.js:/etc/go-dice-backend/load_tests.js:ro
+    entrypoint:
+      - k6
+      - run
+      - /etc/go-dice-backend/load_tests.js
