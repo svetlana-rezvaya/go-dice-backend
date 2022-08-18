@@ -13,11 +13,26 @@ import (
 	"github.com/svetlana-rezvaya/go-dice-cli/statistics"
 )
 
+//go:generate swag init --generalInfo main.go --parseDependency --output ../../docs --outputTypes json,yaml
+
+// @title go-dice-backend API
+// @version 1.0.0
+// @license.name MIT
+// @host localhost:8080
+// @basePath /api/v1
+
 type result struct {
 	Throws     []int
 	Statistics statistics.Statistics
 }
 
+// @router /dice [POST]
+// @param throws query int true "throw count"
+// @param faces query int true "face count"
+// @produce json
+// @success 200 {object} result
+// @failure 400 {string} string
+// @failure 500 {string} string
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
