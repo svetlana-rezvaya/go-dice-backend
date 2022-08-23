@@ -22,6 +22,8 @@ services:
 
   k6:
     image: grafana/k6:0.39.0-69-g8f981bb3
+    environment:
+      - K6_OUT=influxdb=http://influxdb:8086/k6
     ports:
       - 6565:6565 # first - host port, second - container port (port mapping)
     volumes:
@@ -30,3 +32,11 @@ services:
       - k6
       - run
       - /etc/go-dice-backend/load_tests.js
+
+  influxdb:
+    image: influxdb:1.8.10-alpine
+    environment:
+      - INFLUXDB_DB=k6
+    ports:
+      - 8086:8086 # first - host port, second - container port (port mapping)
+
