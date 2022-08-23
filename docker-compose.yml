@@ -40,3 +40,14 @@ services:
     ports:
       - 8086:8086 # first - host port, second - container port (port mapping)
 
+  grafana:
+    image: grafana/grafana:9.1.1
+    environment:
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_BASIC_ENABLED=false
+    ports:
+      - 3000:3000 # first - host port, second - container port (port mapping)
+    volumes:
+      - ./tests/grafana:/etc/grafana/provisioning:ro
+
