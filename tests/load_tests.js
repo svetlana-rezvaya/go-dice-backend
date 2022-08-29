@@ -17,7 +17,11 @@ export const options = {
 };
 
 export default function () {
-  const response = http.get("http://test.k6.io/");
+  const throws = 20;
+  const faces = 10;
+  const response = http.get(
+    `http://go-dice-backend:9090/api/v1/dice?throws=${throws}&faces=${faces}`
+  );
   check(response, {
     "is status 200": (response) => response.status === 200,
   });
