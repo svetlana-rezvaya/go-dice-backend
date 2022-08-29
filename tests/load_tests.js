@@ -16,9 +16,15 @@ export const options = {
   },
 };
 
+function getRandomNumberInRange(minimum, maximum) {
+  const randomNumber = Math.random(); // return a random number in the range 0 to less than 1 (inclusive of 0, but not 1)
+  const transformedRandomNumber = (maximum - minimum) * randomNumber + minimum; // transform range [0, 1) to range [minimum, maximum)
+  return Math.round(transformedRandomNumber);
+}
+
 export default function () {
-  const throws = 20;
-  const faces = 10;
+  const throws = getRandomNumberInRange(1, 100);
+  const faces = getRandomNumberInRange(2, 100);
   const response = http.get(
     `http://go-dice-backend:9090/api/v1/dice?throws=${throws}&faces=${faces}`
   );
