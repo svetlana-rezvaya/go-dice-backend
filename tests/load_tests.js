@@ -18,7 +18,8 @@ export const options = {
 
 function getRandomNumberInRange(minimum, maximum) {
   const randomNumber = Math.random(); // return a random number in the range 0 to less than 1 (inclusive of 0, but not 1)
-  const transformedRandomNumber = (maximum - minimum) * randomNumber + minimum; // transform range [0, 1) to range [minimum, maximum)
+  // transform range [0, 1) to range [minimum, maximum)
+  const transformedRandomNumber = (maximum - minimum) * randomNumber + minimum;
   return Math.round(transformedRandomNumber);
 }
 
@@ -30,6 +31,12 @@ export default function () {
   );
   check(response, {
     "is status 200": (response) => response.status === 200,
+    "has Throws array": (response) => {
+      // try to parse the response as JSON and receive the Throws field from it
+      const receivedThrows = response.json("Throws");
+      // check if received throws is an array and its length equals the desired length
+      return Array.isArray(receivedThrows) && receivedThrows.length === throws;
+    },
   });
 
   sleep(1);
