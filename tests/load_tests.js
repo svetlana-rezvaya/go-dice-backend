@@ -21,7 +21,7 @@ export default function () {
   const throws = randomIntBetween(1, 100);
   const faces = randomIntBetween(2, 100);
   const response = http.get(
-    `http://go-dice-backend:9090/api/v1/dice?throws=${throws}&faces=${faces}`
+    `http://${__ENV.SERVICE_ADDRESS}/api/v1/dice?throws=${throws}&faces=${faces}`
   );
   check(response, {
     "is status 200": (response) => response.status === 200,

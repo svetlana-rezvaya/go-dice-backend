@@ -23,6 +23,7 @@ services:
   k6:
     image: grafana/k6:0.39.0-69-g8f981bb3
     environment:
+      - SERVICE_ADDRESS=go-dice-backend:9090
       - K6_OUT=influxdb=http://influxdb:8086/k6
     ports:
       - 6565:6565 # first - host port, second - container port (port mapping)
