@@ -1,5 +1,6 @@
 import http from "k6/http";
 import { check, sleep } from "k6";
+import { randomIntBetween } from "https://jslib.k6.io/k6-utils/1.4.0/index.js";
 
 export const options = {
   stages: [
@@ -16,16 +17,9 @@ export const options = {
   },
 };
 
-function getRandomNumberInRange(minimum, maximum) {
-  const randomNumber = Math.random(); // return a random number in the range 0 to less than 1 (inclusive of 0, but not 1)
-  // transform range [0, 1) to range [minimum, maximum)
-  const transformedRandomNumber = (maximum - minimum) * randomNumber + minimum;
-  return Math.round(transformedRandomNumber);
-}
-
 export default function () {
-  const throws = getRandomNumberInRange(1, 100);
-  const faces = getRandomNumberInRange(2, 100);
+  const throws = randomIntBetween(1, 100);
+  const faces = randomIntBetween(2, 100);
   const response = http.get(
     `http://go-dice-backend:9090/api/v1/dice?throws=${throws}&faces=${faces}`
   );
