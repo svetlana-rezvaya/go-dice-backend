@@ -1,6 +1,7 @@
 import http from "k6/http";
-import { check, sleep } from "k6";
+import { sleep } from "k6";
 import { randomIntBetween } from "https://jslib.k6.io/k6-utils/1.4.0/index.js";
+import { expect } from "https://jslib.k6.io/k6chaijs/4.3.4.1/index.js";
 
 export const options = {
   stages: [
@@ -23,15 +24,11 @@ export default function () {
   const response = http.get(
     `http://${__ENV.SERVICE_ADDRESS}/api/v1/dice?throws=${throws}&faces=${faces}`
   );
-  check(response, {
-    "is status 200": (response) => response.status === 200,
-    "has Throws array": (response) => {
-      // try to parse the response as JSON and receive the Throws field from it
-      const receivedThrows = response.json("Throws");
-      // check if received throws is an array and its length equals the desired length
-      return Array.isArray(receivedThrows) && receivedThrows.length === throws;
-    },
-  });
+  expect(response.status, "status code").to.equal(200);
+  expect(response).to.have.validJsonBody();
+  expect(response.json(), "response body").to.have.property("Throws");
+  expect(response.json("Throws"), "property 'Throws'").to.be.an("array");
+  expect(response.json("Throws"), "property 'Throws'").to.have.lengthOf(throws);
 
   sleep(1);
 }
