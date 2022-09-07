@@ -24,11 +24,38 @@ export default function () {
   const response = http.get(
     `http://${__ENV.SERVICE_ADDRESS}/api/v1/dice?throws=${throws}&faces=${faces}`
   );
+
   expect(response.status, "status code").to.equal(200);
   expect(response).to.have.validJsonBody();
+
   expect(response.json(), "response body").to.have.property("Throws");
-  expect(response.json("Throws"), "property 'Throws'").to.be.an("array");
-  expect(response.json("Throws"), "property 'Throws'").to.have.lengthOf(throws);
+  expect(response.json("Throws"), "property 'Throws'")
+    .to.be.an("array")
+    .to.have.lengthOf(throws);
+
+  expect(response.json(), "response body").to.have.property("Statistics");
+  expect(response.json("Statistics"), "property 'Statistics'").to.have.property(
+    "Minimum"
+  );
+  expect(
+    response.json("Statistics.Minimum"),
+    "property 'Statistics.Minimum'"
+  ).to.equal(Math.min(...response.json("Throws")));
+
+  expect(response.json("Statistics"), "property 'Statistics'").to.have.property(
+    "Maximum"
+  );
+  expect(
+    response.json("Statistics.Maximum"),
+    "property 'Statistics.Maximum'"
+  ).to.equal(Math.max(...response.json("Throws")));
+
+  expect(response.json("Statistics"), "property 'Statistics'").to.have.property(
+    "Sum"
+  );
+  expect(response.json("Statistics.Sum"), "property 'Statistics.Sum'").to.equal(
+    response.json("Throws").reduce((result, item) => result + item, 0)
+  );
 
   sleep(1);
 }
