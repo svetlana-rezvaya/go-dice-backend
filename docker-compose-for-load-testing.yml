@@ -10,6 +10,7 @@ services:
     volumes:
       - ./tests/load_tests.js:/etc/go-dice-backend/load_tests.js:ro
       - ./tests/outputs:/etc/go-dice-backend/outputs
+    user: root:root
     entrypoint:
       - k6
       - run
@@ -22,6 +23,7 @@ services:
       - INFLUXDB_DB=k6
     ports:
       - 8086:8086 # first - host port, second - container port (port mapping)
+    restart: always
 
   grafana:
     image: grafana/grafana:9.1.1
@@ -34,3 +36,4 @@ services:
       - 3000:3000 # first - host port, second - container port (port mapping)
     volumes:
       - ./tests/grafana:/etc/grafana/provisioning:ro
+    restart: always
