@@ -23,7 +23,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "myinfluxdb",
+      "datasource": "InfluxDB Data Source",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -101,7 +101,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "http-req duration",
+      "title": "HTTP Request Duration",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -143,7 +143,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "myinfluxdb",
+      "datasource": "InfluxDB Data Source",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -221,7 +221,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "vus",
+      "title": "VUs",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -283,7 +283,7 @@
     ]
   },
   "timezone": "",
-  "title": "k6 performance test",
+  "title": "k6 Performance Test",
   "uid": "Le2Ku9NMk",
   "version": 2
 }
