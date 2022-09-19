@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// LoggingMiddleware ...
 func LoggingMiddleware(handler http.HandlerFunc) http.HandlerFunc {
 	return func(
 		writer http.ResponseWriter,

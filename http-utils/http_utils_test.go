@@ -136,77 +136,47 @@ func TestGetIntFormValue(test *testing.T) {
 }
 
 func TestHandleError(test *testing.T) {
-	type args struct {
-		status    int
-		format    string
-		arguments []interface{}
-	}
+	previousLogOutput := log.Writer()
+	defer func() { log.SetOutput(previousLogOutput) }()
 
-	tests := []struct {
-		name             string
-		args             args
-		wantedLogMessage string
-		wantedResponse   *http.Response
-	}{
-		{
-			name: "success",
-			args: args{
-				status:    http.StatusNotFound,
-				format:    "test: %d %s",
-				arguments: []interface{}{23, "one"},
-			},
-			wantedLogMessage: "test: 23 one\n",
-			wantedResponse: &http.Response{
-				Status: strconv.Itoa(http.StatusNotFound) + " " +
-					http.StatusText(http.StatusNotFound),
-				StatusCode: http.StatusNotFound,
-				Proto:      "HTTP/1.1",
-				ProtoMajor: 1,
-				ProtoMinor: 1,
-				Header: http.Header{
-					"Content-Type":           []string{"text/plain; charset=utf-8"},
-					"X-Content-Type-Options": []string{"nosniff"},
-				},
-				Body:          ioutil.NopCloser(bytes.NewReader([]byte("test: 23 one\n"))),
-				ContentLength: -1,
-			},
-		},
-	}
-	for _, testData := range tests {
-		previousLogOutput := log.Writer()
-		defer func() { log.SetOutput(previousLogOutput) }()
+	var logBuffer bytes.Buffer
+	log.SetOutput(&logBuffer)
 
-		var logBuffer bytes.Buffer
-		log.SetOutput(&logBuffer)
+	responseRecorder := httptest.NewRecorder()
+	HandleError(responseRecorder, http.StatusNotFound, "test: %d %s", 23, "one")
 
-		responseRecorder := httptest.NewRecorder()
-		HandleError(
-			responseRecorder,
-			testData.args.status,
-			testData.args.format,
-			testData.args.arguments...,
+	logMessage := logBuffer.String()
+	wantedLogMessage := "test: 23 one\n"
+	if !strings.HasSuffix(logMessage, wantedLogMessage) {
+		test.Logf(
+			"failed:\n  expected: %+v\n  actual: %+v",
+			wantedLogMessage,
+			logMessage,
 		)
+		test.Fail()
+	}
 
-		logMessage := logBuffer.String()
-		if !strings.HasSuffix(logMessage, testData.wantedLogMessage) {
-			test.Logf(
-				"failed %q:\n  expected: %+v\n  actual: %+v",
-				testData.name,
-				testData.wantedLogMessage,
-				logMessage,
-			)
-			test.Fail()
-		}
-
-		response := responseRecorder.Result()
-		if !reflect.DeepEqual(response, testData.wantedResponse) {
-			test.Logf(
-				"failed %q:\n  expected: %+v\n  actual: %+v",
-				testData.name,
-				testData.wantedResponse,
-				response,
-			)
-			test.Fail()
-		}
+	response := responseRecorder.Result()
+	wantedResponse := &http.Response{
+		Status: strconv.Itoa(http.StatusNotFound) + " " +
+			http.StatusText(http.StatusNotFound),
+		StatusCode: http.StatusNotFound,
+		Proto:      "HTTP/1.1",
+		ProtoMajor: 1,
+		ProtoMinor: 1,
+		Header: http.Header{
+			"Content-Type":           []string{"text/plain; charset=utf-8"},
+			"X-Content-Type-Options": []string{"nosniff"},
+		},
+		Body:          ioutil.NopCloser(bytes.NewReader([]byte("test: 23 one\n"))),
+		ContentLength: -1,
+	}
+	if !reflect.DeepEqual(response, wantedResponse) {
+		test.Logf(
+			"failed:\n  expected: %+v\n  actual: %+v",
+			wantedResponse,
+			response,
+		)
+		test.Fail()
 	}
 }
