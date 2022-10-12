@@ -21,7 +21,7 @@ $ go-dice-backend
 
 Environment variables:
 
-- `PORT` &mdash; server port (default: `8080`).
+- `PORT` &mdash; service port (default: `8080`).
 
 ## Testing
 
@@ -33,29 +33,29 @@ $ go test -race -cover ./...
 
 Running the load and integration tests:
 
-1.  Run the server:
+1.  Run the service:
 
     ```
     $ docker-compose up -d
     ```
 
-2.  Run [InfluxDB](https://www.influxdata.com/) for storing and [Grafana](https://grafana.com/) for displaying test results (better on the second machine):
+2.  Run [InfluxDB](https://www.influxdata.com/) for storing and [Grafana](https://grafana.com/) for displaying test results (better on the second server):
 
     ```
     $ docker-compose -f docker-compose-for-load-testing.yml up -d influxdb grafana
     ```
 
-3.  Run [k6](https://k6.io/) on the machine from step 2:
+3.  Run [k6](https://k6.io/) on the server from step 2 (replace `localhost:8080` with the address of the service from step 1):
 
     ```
-    $ docker-compose -f docker-compose-for-load-testing.yml up k6
+    $ SERVICE_ADDRESS=localhost:8080 docker-compose -f docker-compose-for-load-testing.yml up k6
     ```
 
-4.  Open http://localhost:3000/ on the machine from step 2.
+4.  Open http://localhost:3000/ on the server from step 2.
 
 ## Docs
 
-[Swagger](https://swagger.io/) specification of the server API: [swagger.yaml](docs/swagger.yaml)
+[Swagger](https://swagger.io/) specification of the service API: [docs/swagger.yaml](docs/swagger.yaml)
 
 ## Output Example
 
