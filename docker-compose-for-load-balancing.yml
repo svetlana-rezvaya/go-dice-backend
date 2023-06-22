@@ -1,0 +1,9 @@
+version: "3"
+services:
+  nginx:
+    image: nginx:1.25.1-alpine
+    ports:
+      - 8080:80 # first - host port, second - container port (port mapping)
+    volumes:
+      - ./load_balancing.conf:/etc/nginx/nginx.conf:ro
+    restart: always
